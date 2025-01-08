@@ -9,7 +9,7 @@ export function copyCssStyles<T extends HTMLElement | SVGElement>(
   isRoot: boolean,
   context: Context,
 ): Map<string, [string, string]> {
-  const { ownerWindow, includeStyleProperties, currentParentNodeStyle } = context
+  const { ownerWindow, includeStyleProperties, currentParentNodeStyle, reduceFontSizeFactor } = context
   const clonedStyle = cloned.style
   const computedStyle = ownerWindow!.getComputedStyle(node)
   const defaultStyle = getDefaultStyle(node, null, context)
@@ -57,6 +57,11 @@ export function copyCssStyles<T extends HTMLElement | SVGElement>(
   }
 
   style.forEach(([value, priority], name) => {
+    if (name === 'font-size') {
+      // reduce font size by a factor
+      value = `${(Number.parseFloat(value) * reduceFontSizeFactor).toString()}px`
+    }
+
     clonedStyle.setProperty(name, value, priority)
   })
 

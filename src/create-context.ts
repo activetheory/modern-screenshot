@@ -58,6 +58,7 @@ export async function createContext<T extends Node>(node: T, options?: Options &
     onCreateForeignObjectSvg: null,
     includeStyleProperties: null,
     autoDestruct: false,
+    reduceFontSizeFactor: 1,
     ...options,
 
     // InternalContext

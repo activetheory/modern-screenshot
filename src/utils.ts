@@ -318,3 +318,11 @@ export function splitFontFamily(fontFamily?: string): undefined | string[] {
     .map(val => val.trim().replace(/"|'/g, '').toLowerCase())
     .filter(Boolean)
 }
+
+export function cleanupCanvas(canvas: HTMLCanvasElement, previousContext2d: CanvasRenderingContext2D | null): void {
+  canvas.width = 1
+  canvas.height = 1
+  if (previousContext2d) {
+    previousContext2d.clearRect(0, 0, canvas.width, canvas.height)
+  }
+}

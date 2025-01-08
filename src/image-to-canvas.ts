@@ -4,6 +4,7 @@ import { loadMedia } from './utils'
 export async function imageToCanvas<T extends HTMLImageElement>(
   image: T,
   context: Context,
+  recycle: boolean = false,
 ): Promise<HTMLCanvasElement> {
   const {
     log,
@@ -14,7 +15,8 @@ export async function imageToCanvas<T extends HTMLImageElement>(
 
   log.time('image to canvas')
   const loaded = await loadMedia(image, { timeout, onWarn: context.log.warn })
-  const { canvas, context2d } = createCanvas(image.ownerDocument, context)
+  const { canvas, context2d } = createCanvas(image.ownerDocument, context, recycle)
+
   const drawImage = (): void => {
     try {
       context2d?.drawImage(loaded, 0, 0, canvas.width, canvas.height)
@@ -43,10 +45,17 @@ export async function imageToCanvas<T extends HTMLImageElement>(
   return canvas
 }
 
-function createCanvas(ownerDocument: Document, context: Context): { canvas: HTMLCanvasElement, context2d: CanvasRenderingContext2D | null } {
-  const { width, height, scale, backgroundColor, maximumCanvasSize: max } = context
+function createCanvas(ownerDocument: Document, context: Context, recycle: boolean = false): { canvas: HTMLCanvasElement, context2d: CanvasRenderingContext2D | null } {
+  const { width, height, scale, backgroundColor, maximumCanvasSize: max, previousCanvas, previousContext2d } = context
 
-  const canvas = ownerDocument.createElement('canvas')
+  let canvas
+  if (recycle && previousCanvas) {
+    canvas = previousCanvas
+  }
+  else {
+    canvas = ownerDocument.createElement('canvas')
+    context.previousCanvas = canvas
+  }
 
   canvas.width = Math.floor(width * scale)
   canvas.height = Math.floor(height * scale)
@@ -75,8 +84,16 @@ function createCanvas(ownerDocument: Document, context: Context): { canvas: HTML
       }
     }
   }
-
-  const context2d = canvas.getContext('2d')
+  let context2d
+  if (recycle && previousContext2d) {
+    context2d = previousContext2d
+  }
+  else {
+    context2d = canvas.getContext('2d')
+    if (context2d) {
+      context.previousContext2d = context2d
+    }
+  }
 
   if (context2d && backgroundColor) {
     context2d.fillStyle = backgroundColor

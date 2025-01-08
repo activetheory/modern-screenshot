@@ -123,6 +123,21 @@ export interface InternalContext<T extends Node> {
    */
   currentNodeStyle?: Map<string, [string, string]>
   currentParentNodeStyle?: Map<string, [string, string]>
+
+  /**
+   * The previous canvas used to recycle
+   */
+  previousCanvas?: HTMLCanvasElement
+
+  /**
+   * The previous context2d used to recycle
+   */
+  previousContext2d?: CanvasRenderingContext2D
+
+  /**
+   * The factor to reduce font size
+   */
+  reduceFontSizeFactor: number
 }
 
 export type Context<T extends Node = Node> = InternalContext<T> & Required<Options>

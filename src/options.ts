@@ -129,7 +129,7 @@ export interface Options {
     /**
      * The preferred font format. If specified all other font formats are ignored.
      */
-    preferredFormat?: 'woff' | 'woff2' | 'truetype' | 'opentype' | 'embedded-opentype' | 'svg' | string
+    preferredFormat?: ('woff' | 'woff2' | 'truetype' | 'opentype' | 'embedded-opentype' | 'svg' | string)[]
 
     /**
      * A CSS string to specify for font embeds. If specified only this CSS will

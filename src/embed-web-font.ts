@@ -175,7 +175,7 @@ function filterPreferredFormat(
         const [src, , format] = URL_WITH_FORMAT_RE.exec(match) || []
         if (!format)
           return ''
-        if (format === preferredFormat)
+        if (preferredFormat.includes(format))
           return `src: ${src};`
       }
     })
