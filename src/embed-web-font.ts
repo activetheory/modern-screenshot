@@ -165,19 +165,31 @@ function filterPreferredFormat(
 ): string {
   const { font } = context
 
-  const preferredFormat = font
-    ? font?.preferredFormat
-    : undefined
+  if (!font)
+    return str
+
+  const preferredFormat = font.preferredFormat
 
   return preferredFormat
     ? str.replace(FONT_SRC_RE, (match: string) => {
+      URL_WITH_FORMAT_RE.lastIndex = 0 // Reset the regex index
+      let result = match
+      let found = false
+
       while (true) {
-        const [src, , format] = URL_WITH_FORMAT_RE.exec(match) || []
-        if (!format)
-          return ''
-        if (preferredFormat.includes(format))
-          return `src: ${src};`
+        const matches = URL_WITH_FORMAT_RE.exec(match)
+        if (!matches)
+          break
+
+        const [src, , format] = matches
+        if (preferredFormat.includes(format)) {
+          result = `src: ${src};`
+          found = true
+          break
+        }
       }
+
+      return found ? result : ''
     })
     : str
 }
