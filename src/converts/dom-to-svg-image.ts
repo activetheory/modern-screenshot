@@ -2,7 +2,6 @@ import type { Context } from '../context'
 import type { Options } from '../options'
 import { createStyleElement, orCreateContext } from '../create-context'
 
-import { imageToCanvas } from '../image-to-canvas'
 import { createImage, svgToDataUrl, XMLNS } from '../utils'
 import { domToForeignObjectSvg } from './dom-to-foreign-object-svg'
 
